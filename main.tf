@@ -180,8 +180,8 @@ resource "aws_eks_node_group" "tfnodegroup" {
   instance_types  = ["t2.micro"]
   node_group_name = "tfnodegroup"
   scaling_config {
-    desired_size = 3
-    max_size     = 4  
+    desired_size = 4 #number of nodes in cluster, changed from 3 to 4
+    max_size     = 5  #changed from 4 to 5
     min_size     = 1
   }
   depends_on = [

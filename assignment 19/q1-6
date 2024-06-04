@@ -1,0 +1,19 @@
+1) Kubernetes is an open-sourced tool used to manage, deploy, and create containerized applications across 
+multiple clusters. It manages all elements that make up a cluster from the control plane, to the nodes, 
+to the pods within those nodes.
+
+2) The Control Plane is the brains behind everything within K8s and is what makes the decisions for the clusters. The components that make up the Control Plane are:
+    controller manager - monitors the cluster
+    cloud controller manager - communicates with the cloud provider for managing lb's and networking
+    API server - through which K8s is directed and managed, can be outside the control plane
+    Etcd - state of the cluster, managed through API server
+    Scheduler - tracks status and where to run pods 
+
+3) A master node is the node within a cluster that will be the one dictating all the other nodes and their children pods within that cluster, it does so by hosting the control plane. A worker node is a node that follows the directions from the master node within the cluster, these worker nodes hold the pods under them and are either physical or virtual machines which ensure execution of the containers within.
+
+4) A pod is a container of an image that is going to be executed within the node, a virtual/physical machine. A kubelet is a service that runs on each worker node to orchestrate and ensure proper pod execution.
+
+5) A K8s deployment is a way to ensure that a specific number of replicas of the same container are running at all times within a node, while a daemon set ensures that a specific type of pod is run on all the nodes at the same time.
+
+6) A namespace is a way to divide up a cluster into certain groups. It centralizes apps to be running within their own group as a way to organize everything, all apps will be ran in the default namespace unless specified.
+

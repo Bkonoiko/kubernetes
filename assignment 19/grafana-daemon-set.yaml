@@ -1,0 +1,27 @@
+apiVersion: apps/v1 #version of api for control plane
+kind: DaemonSet #deploys pods in specific nodes
+metadata:
+  name: grafana-daemon-set #name
+  namespace: grafana #namespace daemonset will live in
+  labels:
+    type: daemon-set
+spec:
+  selector:
+    matchLabels: 
+      monitor: grafana
+  template:
+    metadata:
+      labels:
+        monitor: grafana
+    spec:
+      nodeSelector: #this will select the node for which the pod will be created in
+        app: grafana
+      containers:
+      - name: grafana-container
+        image: grafana/grafana:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 3000

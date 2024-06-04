@@ -1,0 +1,20 @@
+apiVersion: v1 #defines the verison of the api the pod is going to run
+kind: Pod #the type of service being created
+metadata: #the metadate of the pod itself
+  name: redis-pod #name of the pod
+  namespace: cache #namespace the pod will exist in
+  labels: #can be anything, used as an identifier for the pod
+    service: redis 
+
+spec: #config of the pod itself
+  containers:
+  - name: redis-container #name of the container
+    image: redis:latest  #image of the container
+    resources: #resources given to the container
+      limits:
+        memory: "128Mi"
+        cpu: "250m"
+    ports: #port thats being exposed on container
+    - containerPort: 6379
+
+
