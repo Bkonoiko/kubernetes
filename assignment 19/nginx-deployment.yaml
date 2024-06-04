@@ -1,0 +1,26 @@
+apiVersion: apps/v1 #specifies version of the deployment
+kind: Deployment #type of app being created
+metadata: 
+  name: nginx-deployment #name of deployment
+  namespace: web-apps #namespace deployment will exist in
+  labels: #can be anything, used to identify deployment
+    type: deployment
+spec:
+  replicas: 3 #number of pods within node
+  selector: #determing factor of which it will select
+    matchLabels: #will look for matching labels
+      app: nginx
+  template: #template of the each pod within deployment
+    metadata:
+      labels: #label for template must match with selectors matchLabels
+        app: nginx
+    spec: #config of the container  
+      containers:
+      - name: nginx-container #name of container
+        image: nginx:latest #image of container
+        resources: #resouces being allocated to container
+          limits: 
+            memory: "128Mi"
+            cpu: "250m"
+        ports: #port being exposed on container
+        - containerPort: 80

@@ -1,0 +1,17 @@
+apiVersion: v1 #specifies the version of the Kubernetes API that the resource adheres to
+kind: Pod #single pod within a namespace
+metadata: #data of kind of resources thats being created
+  namespace: web
+  name: nginx-pod
+  labels: #label could be anything
+    name: nginx-pod
+spec: #config of pod 
+  containers: 
+  - name: nginx-container
+    image: nginx:latest
+    resources:
+      limits: 
+        memory: "128Mi"
+        cpu: "250m"
+    ports:
+    - containerPort: 80

@@ -1,0 +1,29 @@
+apiVersion: apps/v1 #specifies the version of the Kubernetes API that the resource adheres to
+kind: DaemonSet #kind of resource were making, deploy a pod on each node, node level
+metadata: #data of kind of resources thats being created
+  name: nginx-daemonset-1 
+  namespace: web
+  labels: #label could be anything
+    function: my-daemon-set-1
+spec: #config of daemon set
+  selector: #who is daemon set selecting/managing
+    matchLabels: #looks for matching sets
+      service: daemon-set-pod-1
+  template: #template of the daemon set
+    metadata:
+      labels: #label must match selector matchLabel so it can manage them
+        service: daemon-set-pod-1
+    spec: #spec of each container
+      nodeSelector: #choosing which node to throw into a pod
+        test: passed #added a label to a node, gave label to check which nodes to add to pod via cli
+      containers:
+      - name: nginx-container
+        image: nginx:latest
+        resources:
+          limits: 
+            memory: "128Mi" #how much memory is given in Megabytes,
+            cpu: "250m" #how much cpu usage is being given
+        ports:
+        - containerPort: 80
+
+    

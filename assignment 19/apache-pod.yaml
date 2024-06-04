@@ -1,0 +1,16 @@
+apiVersion: v1 #defines the verison of the api the pod is going to run
+kind: Pod #the type of service being created
+metadata: #the metadate of the pod itself
+  name: apache-pod #name of the pod
+  labels: #can be anything, used as an identifier for the pod
+    service: apache 
+spec: #config of the pod itself
+  containers:
+  - name: apache-container #name of the container
+    image: httpd:latest  #image of the container
+    resources: #resources given to the container
+      limits:
+        memory: "128Mi"
+        cpu: "250m"
+    ports: #port thats being exposed on container
+    - containerPort: 80
