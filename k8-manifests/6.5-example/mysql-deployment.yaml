@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-dep
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: httpd
+  #strategy: #need to be careful that it will cause downtime if its ran to take down 
+   # type: Recreate #will delete all the deployments when you re-apply the yaml file, in case you make changes
+          #without strat, it will create a new part of the new version, delete a part of the old version, and go until
+          #the last part, then once at the last part, it will delete the pod, and spin up a new pod at the same time
+          #rolling update - is default
+  template:
+    metadata:
+      name: meta-httpd
+      labels:
+        app: httpd
+    spec:
+      containers:
+      - image: httpd:latest
+        name: spec-httpd
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 100m
+            memory: 400Mi
+          limits:
+            memory: 800Mi
+            cpu: .2 #same as 200m m = milli = cpu/1000 = 200m = .2 of whole cpu
+
+
