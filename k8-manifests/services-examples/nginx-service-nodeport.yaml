@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-node-service
+spec:
+  type: NodePort #exposes service on a node, allows external communication on the node
+  selector: #which pod it is looking at 
+    pod: nginx 
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 31000 #only allowed a specific range of ports, this is the port exposed on the Node, will listen here

@@ -2,18 +2,18 @@ apiVersion: apps/v1 #specifies the version of the Kubernetes API that the resour
 kind: Deployment #deploy pods and keep it at the desired rate/fields, pod level 
 metadata: #data of kind of resources thats being created
   name: nginx-deployment #name of resource being created
-  namespace: web
+  #namespace: web
   labels: #label could be anything
     type: deployment
 spec: #config of deployment set
   replicas: 2
   selector: 
     matchLabels: #looks for matching sets
-      app: nginx
+      pod: nginx
   template: #template of the deployment
     metadata:
       labels: #label must match selector matchLabel so it can manage them
-        app: nginx
+        pod: nginx
     spec: #spec of each container
       containers: #each pod runs a container
       - name: nginx-container

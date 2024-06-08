@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-internal-service
+  #namespace: web-app | not created yet
+spec:
+  selector: #which pods its going to, who its going to forward to 
+    pod: nginx
+  type: ClusterIP #type of service being created, clusterip is for communcation from pod to pod, gives IP to the service  
+  ports:
+    - protocol: TCP #can be indented or put on same indents as word ports
+      port: 80 #port of service itself, listening to port 80, will forward the traffic to the targetport for the associated pod
+      targetPort: 80 #routes traffic from port 80 into the pods port at 8080 
+      #can have multiple routes of traffic for ports  
+
+    #Services are for communication for pods within a cluster
+    #theyre one directional
+    #it can be any pod within a cluster
+    #EX: nginx pod wants to talk to mysql pod
+    # nginx pod hits the mysql service, which routes to the mysql pod
+    # mysql pod needs to hit nginx service which then routes to ngxin pod
+
+    #
