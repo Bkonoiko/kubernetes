@@ -1,0 +1,44 @@
+apiVersion: apps/v1 #specifies the version of the Kubernetes API that the resource adheres to
+kind: Deployment #deploy pods and keep it at the desired rate/fields, pod level 
+metadata: #data of kind of resources thats being created
+  name: httpd-deployment #name of resource being created
+  #namespace: web
+  labels: #label could be anything
+    type: deployment
+spec: #config of deployment set
+  replicas: 1
+  selector: 
+    matchLabels: #looks for matching sets
+      pod: httpd
+  template: #template of the deployment
+    metadata:
+      labels: #label must match selector matchLabel so it can manage them
+        pod: httpd
+    spec: #spec of each container
+      containers: #each pod runs a container
+      - name: httpd-container
+        image: httpd:latest
+        ports:
+        - containerPort: 80
+        # args:
+        # - /bin/sh
+        # - -c
+        # - touch /var/www/html/index.html
+        livenessProbe: #make sure it up and running
+          exec: 
+            command:
+              - /usr/bin/ls
+              - /usr/local/apache2/htdocs
+              #- /usr/local/apache2/htdocs
+          initialDelaySeconds: 15 #delay before the first probe is initiated
+          periodSeconds: 10 #time interval between the next probe
+        readinessProbe:  #make sure the pod itself is ready to accept traffic
+          exec:
+            command:
+              - touch
+              - /tmp/readiness
+          initialDelaySeconds: 15 #delay before the first probe is initiated
+          periodSeconds: 10 #time interval between the next probe
+
+
+

@@ -1,0 +1,50 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-web
+provisioner: ebs.csi.aws.com #CSI Driver 
+parameters: 
+  type: gp2
+  fsType: xfs
+volumeBindingMode: WaitForFirstConsumer #specifiy the volume that will be provisioned when the pod that has the pvc is scheduled
+
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sc-pvc
+  namespace: webns
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: sc-web #just need name to reference storage class
+
+
+---
+
+apiVersion: v1 #specifies the version of the Kubernetes API that the resource adheres to
+kind: Pod #single pod within a namespace
+metadata: #data of kind of resources thats being created
+  namespace: webns
+  name: pod-sc
+  labels: #label could be anything
+    pod: sc
+spec: #config of pod 
+  nodeSelector:
+    topology.kubernetes.io/zone: us-east-1a
+  containers: 
+  - name: nginx-container
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+  volumes: #reference of volumes being used
+    - name: sc-pvc-volume
+      persistentVolumeClaim: #name of pvc
+        claimName: sc-pvc     
+
+

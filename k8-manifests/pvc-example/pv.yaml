@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: web-pv
+  #not namespace specfic, its on cluster level
+spec:
+  capacity:
+    storage: 8Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce #specifies  the access mode allowing for read/write access by a single node, ReadWriteMany - read/write access for multiple nodes
+  persistentVolumeReclaimPolicy: Retain #will not delete the volume on deletion of node
+  storageClassName: manual
+  # awsElasticBlockStore: 
+  #    volumeID: vol-01346e04a50e0a2f9 #needs to be created already, did it through GUI, will add to terraform
+  #    fsType: xfs
+  csi: #a Container Storage Interface(CSI) is needed to be able to commuinicate with the ebs/efs storage
+    driver: ebs.csi.aws.com
+    volumeHandle: vol-0b2150e2eb8a4f65c
+  #this needs to replace the awsElasticBlockStore, needs to be done prior to pv being created
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: web-pvc
+  namespace: webns #PVC can be namespace specific
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce #referenced the pv using the accessModes
+  resources:
+    requests:
+      storage: 8Gi
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-pv
+  namespace: webns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-pv
+  template:
+    metadata:
+      labels:
+        app: nginx-pv
+    spec: 
+      nodeSelector:
+        topology.kubernetes.io/zone: us-east-1a
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts: #name of the volume and mount path
+          - name: nginxvolume
+            mountPath: /usr/share/nginx/html #mount point
+      volumes: #reference of volumes being used
+        - name: nginxvolume
+          persistentVolumeClaim: #name of pvc
+            claimName: web-pvc
+
+

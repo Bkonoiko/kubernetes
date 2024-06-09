@@ -54,6 +54,43 @@ resource "aws_iam_role_policy_attachment" "tfpolicyattach4" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
+
+resource "aws_iam_policy" "ebs_csi_driver_policy" {
+  name        = "AmazonEBSCSIDriverPolicy"
+  description = "Policy for EBS CSI Driver"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:AttachVolume",
+          "ec2:CreateSnapshot",
+          "ec2:CreateTags",
+          "ec2:CreateVolume",
+          "ec2:DeleteSnapshot",
+          "ec2:DeleteTags",
+          "ec2:DeleteVolume",
+          "ec2:DescribeAvailabilityZones",
+          "ec2:DescribeInstances",
+          "ec2:DescribeSnapshots",
+          "ec2:DescribeTags",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeVolumesModifications",
+          "ec2:DetachVolume"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
+}
+
+// Attach the Policy to the Node Group Role
+resource "aws_iam_role_policy_attachment" "tfpolicyattach5" {
+  role       = aws_iam_role.tfnodegrouprole.name
+  policy_arn = aws_iam_policy.ebs_csi_driver_policy.arn
+}
+
 // EKS Cluster
 resource "aws_eks_cluster" "tfcluster" {
   name     = "tfcluster"
@@ -76,7 +113,7 @@ resource "aws_eks_node_group" "tfnodegroup" {
   node_role_arn   = aws_iam_role.tfnodegrouprole.arn
   subnet_ids      = [var.subnet1, var.subnet2]
   ami_type        = "AL2_x86_64"
-  instance_types  = ["t2.micro"]
+  instance_types  = ["t2.medium"]
   node_group_name = "tfnodegroup"
 
   launch_template {
