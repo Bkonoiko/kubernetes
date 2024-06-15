@@ -1,0 +1,42 @@
+apiVersion: apps/v1 #specifies the version of the Kubernetes API that the resource adheres to
+kind: Deployment #deploy pods and keep it at the desired rate/fields, pod level 
+metadata: #data of kind of resources thats being created
+  name: nginx-deployment #name of resource being created
+  #namespace: web
+  labels: #label could be anything
+    type: deployment
+spec: #config of deployment set
+  replicas: 2
+  selector: 
+    matchLabels: #looks for matching sets
+      pod: nginx
+  template: #template of the deployment
+    metadata:
+      labels: #label must match selector matchLabel so it can manage them
+        pod: nginx
+    spec: #spec of each container
+      containers: #each pod runs a container
+      - name: nginx-container
+        image: nginx:latest
+        resources:
+          limits: 
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  #namespace: web
+spec:
+  selector:
+    app: myapp
+  ports:
+  - port: 80 #port on service that accepts traffic
+    targetPort: 80 #port that the service will direct traffic into
+  type: ClusterIP
+  

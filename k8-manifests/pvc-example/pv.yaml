@@ -9,7 +9,9 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce #specifies  the access mode allowing for read/write access by a single node, ReadWriteMany - read/write access for multiple nodes
-  persistentVolumeReclaimPolicy: Retain #will not delete the volume on deletion of node
+    #Once = by one node only can be mounted
+    #many = by many nodes at one time can be mounted on
+  persistentVolumeReclaimPolicy: Retain #will not delete the volume on deletion of node, or the deletion of the pvc
   storageClassName: manual
   # awsElasticBlockStore: 
   #    volumeID: vol-01346e04a50e0a2f9 #needs to be created already, did it through GUI, will add to terraform
@@ -25,11 +27,13 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: web-pvc
-  namespace: webns #PVC can be namespace specific
+  namespace: webns #PVC are namespace specific
 spec:
   storageClassName: manual
   accessModes:
     - ReadWriteOnce #referenced the pv using the accessModes
+    #Once = by one node only can be mounted
+    #many = by many nodes at one time can be mounted on
   resources:
     requests:
       storage: 8Gi
